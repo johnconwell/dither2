@@ -43,7 +43,7 @@ Palette::Palette(std::string name)
 
 void Palette::sort()
 {
-    std::size_t colors_size = colors.size();
+    const std::size_t colors_size = colors.size();
 
     for(std::size_t index_primary = 0; index_primary < colors_size - 1; index_primary++)
     {
@@ -65,7 +65,7 @@ Color Palette::nearest(Color color, std::string mapping_method)
 {
     int index_nearest = -1;
     int distance_squared_nearest = INT_MAX;
-    std::size_t colors_size = colors.size();
+    const std::size_t colors_size = colors.size();
 
     if(mapping_method == "EUCLIDEAN_DISTANCE")
     {
@@ -91,16 +91,21 @@ Color Palette::nearest(Color color, std::string mapping_method)
             }
         }
     }
+    else
+    {
+        std::cerr << "Error: invalide palette mapping method - " << mapping_method << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
 
     return colors[index_nearest];
 }
 
 Color Palette::pitch_vector()
 {
-    std::size_t colors_size = colors.size();
+    const std::size_t colors_size = colors.size();
     Color distance_vector = Color(0, 0, 0, Color::CHANNEL_MAX);
 
-    for(size_t index_colors = 0; index_colors < colors_size - 1; index_colors++)
+    for(std::size_t index_colors = 0; index_colors < colors_size - 1; index_colors++)
     {
         distance_vector.r += std::abs(colors[index_colors].r - colors[index_colors + 1].r);
         distance_vector.g += std::abs(colors[index_colors].g - colors[index_colors + 1].g);
@@ -117,9 +122,9 @@ Color Palette::pitch_vector()
 std::string Palette::to_string()
 {
     std::string output = name + "\n";
-    size_t colors_size = colors.size();
+    std::size_t colors_size = colors.size();
 
-    for(size_t index_palette = 0; index_palette < colors_size; index_palette++)
+    for(std::size_t index_palette = 0; index_palette < colors_size; index_palette++)
     {
         output += colors[index_palette].to_string_hex() + "\n";
     }

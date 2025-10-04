@@ -1,6 +1,7 @@
 #ifndef __ORDERED_H
 #define __ORDERED_H
 
+#include <cstdlib> // std::exit
 #include <iostream> // std::cerr, std::endl
 #include <string> // std::string
 #include <unordered_map> // std::unordered_map

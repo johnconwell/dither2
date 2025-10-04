@@ -1,6 +1,7 @@
 #ifndef __GRAYSCALE_H
 #define __GRAYSCALE_H
 
+#include <cstdlib> // std::exit
 #include <iostream> // std::cerr, std::endl
 #include <string> // std::string
 #include <unordered_map> // std::unordered_map
@@ -35,12 +36,6 @@ public:
         this->weights = METHODS.at(name);
     }
 
-    std::vector<double> get_weights()
-    {
-        return weights;
-    }
-
-private:
     std::string name;
     std::vector<double> weights;
 };

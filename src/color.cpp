@@ -49,6 +49,11 @@ bool Color::equals(const Color& other) const
     return (this->r == other.r) && (this->g == other.g) && (this->b == other.b) && (this->a == other.a);
 }
 
+Color Color::add(const Color& other) const
+{
+    return Color(this->r + other.r, this->g + other.g, this->b + other.b, std::max(this->a, other.a));
+}
+
 int Color::distance_euclidean_squared(Color other)
 {
     return ((other.r - this->r) * (other.r - this->r)) + ((other.g - this->g) * (other.g - this->g)) + ((other.b - this->b) * (other.b - this->b));
@@ -71,13 +76,13 @@ double Color::grayscale_value(std::vector<double> grayscale_weights)
 
 void Color::to_linear(double gamma)
 {
-    double r_scaled = static_cast<double>(r) / static_cast<double>(CHANNEL_VALUES);
-    double g_scaled = static_cast<double>(g) / static_cast<double>(CHANNEL_VALUES);
-    double b_scaled = static_cast<double>(b) / static_cast<double>(CHANNEL_VALUES);
+    const double r_scaled = static_cast<double>(r) / static_cast<double>(CHANNEL_VALUES);
+    const double g_scaled = static_cast<double>(g) / static_cast<double>(CHANNEL_VALUES);
+    const double b_scaled = static_cast<double>(b) / static_cast<double>(CHANNEL_VALUES);
 
-    double r_linear = (r_scaled < 0.04045) ? (r_scaled / 12.92) : pow((r_scaled + 0.055) / 1.055, gamma);
-    double g_linear = (g_scaled < 0.04045) ? (g_scaled / 12.92) : pow((g_scaled + 0.055) / 1.055, gamma);
-    double b_linear = (b_scaled < 0.04045) ? (b_scaled / 12.92) : pow((b_scaled + 0.055) / 1.055, gamma);
+    const double r_linear = (r_scaled < 0.04045) ? (r_scaled / 12.92) : pow((r_scaled + 0.055) / 1.055, gamma);
+    const double g_linear = (g_scaled < 0.04045) ? (g_scaled / 12.92) : pow((g_scaled + 0.055) / 1.055, gamma);
+    const double b_linear = (b_scaled < 0.04045) ? (b_scaled / 12.92) : pow((b_scaled + 0.055) / 1.055, gamma);
 
     r = static_cast<int>(static_cast<double>(CHANNEL_VALUES) * r_linear);
     g = static_cast<int>(static_cast<double>(CHANNEL_VALUES) * g_linear);
@@ -88,13 +93,13 @@ void Color::to_linear(double gamma)
 
 void Color::to_srgb(double gamma)
 {
-    double r_scaled = static_cast<double>(r) / static_cast<double>(CHANNEL_VALUES);
-    double g_scaled = static_cast<double>(g) / static_cast<double>(CHANNEL_VALUES);
-    double b_scaled = static_cast<double>(b) / static_cast<double>(CHANNEL_VALUES);
+    const double r_scaled = static_cast<double>(r) / static_cast<double>(CHANNEL_VALUES);
+    const double g_scaled = static_cast<double>(g) / static_cast<double>(CHANNEL_VALUES);
+    const double b_scaled = static_cast<double>(b) / static_cast<double>(CHANNEL_VALUES);
 
-    double r_linear = (r_scaled < 0.0031308) ? (r_scaled * 12.92) : (1.055 * pow(r_scaled, 1.0 / gamma) - 0.055);
-    double g_linear = (g_scaled < 0.0031308) ? (g_scaled * 12.92) : (1.055 * pow(g_scaled, 1.0 / gamma) - 0.055);
-    double b_linear = (b_scaled < 0.0031308) ? (b_scaled * 12.92) : (1.055 * pow(b_scaled, 1.0 / gamma) - 0.055);
+    const double r_linear = (r_scaled < 0.0031308) ? (r_scaled * 12.92) : (1.055 * pow(r_scaled, 1.0 / gamma) - 0.055);
+    const double g_linear = (g_scaled < 0.0031308) ? (g_scaled * 12.92) : (1.055 * pow(g_scaled, 1.0 / gamma) - 0.055);
+    const double b_linear = (b_scaled < 0.0031308) ? (b_scaled * 12.92) : (1.055 * pow(b_scaled, 1.0 / gamma) - 0.055);
 
     r = static_cast<int>(static_cast<double>(CHANNEL_VALUES) * r_linear);
     g = static_cast<int>(static_cast<double>(CHANNEL_VALUES) * g_linear);
@@ -105,7 +110,7 @@ void Color::to_srgb(double gamma)
 
 void Color::to_grayscale(std::vector<double> grayscale_weights)
 {
-    double value = grayscale_value(grayscale_weights);
+    const double value = grayscale_value(grayscale_weights);
     r = static_cast<int>(value);
     g = static_cast<int>(value);
     b = static_cast<int>(value);

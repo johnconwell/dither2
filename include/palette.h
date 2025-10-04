@@ -4,6 +4,7 @@
 #include "color.h" // Color structure
 #include <climits> // INT_MAX
 #include <cmath> // std::abs()
+#include <cstdlib> // std::exit
 #include <fstream> // std::ifstream
 #include <sstream> // std::stringstream
 #include <string> // std::string

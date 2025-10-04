@@ -20,7 +20,7 @@ void Image::reset()
 
 Color Image::get_pixel(unsigned int x, unsigned int y)
 {
-    int index_start = Color::NUM_BYTES * width * y + Color::NUM_BYTES * x;
+    const int index_start = Color::NUM_BYTES * width * y + Color::NUM_BYTES * x;
     return Color(
         pixels[index_start + Color::INDEX_R],
         pixels[index_start + Color::INDEX_G],
@@ -31,7 +31,7 @@ Color Image::get_pixel(unsigned int x, unsigned int y)
 
 void Image::set_pixel(Color color, unsigned int x, unsigned int y)
 {
-    int index_start = Color::NUM_BYTES * width * y + Color::NUM_BYTES * x;
+    const int index_start = Color::NUM_BYTES * width * y + Color::NUM_BYTES * x;
     pixels[index_start + Color::INDEX_R] = color.r;
     pixels[index_start + Color::INDEX_G] = color.g;
     pixels[index_start + Color::INDEX_B] = color.b;

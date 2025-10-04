@@ -29,6 +29,7 @@ public:
     double get_lightness();
 
     bool equals(const Color& other) const;
+    Color add(const Color& other) const;
 
     int distance_euclidean_squared(Color other);
     double distance_euclidean(Color other);
