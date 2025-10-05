@@ -63,10 +63,4 @@ std::vector<std::vector<T>> _convolve(std::vector<std::vector<T>> matrix, std::v
     return convolved_matrix;
 }
 
-
-
-
-
-
-
 #endif

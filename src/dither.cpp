@@ -8,14 +8,12 @@ Dither::Dither()
 
 std::size_t Dither::load(const char* file_name)
 {
-    image.load(file_name);
-    return;
+    return image.load(file_name);
 }
 
 std::size_t Dither::save(const char* file_name)
 {
-    image.save(file_name);
-    return;
+    return image.save(file_name);
 }
 
 void Dither::grayscale(std::string name_grayscale_weights)
@@ -239,6 +237,12 @@ void Dither::ordered(std::string name_threshold_matrix, std::string name_mapping
         for(std::size_t x = 0; x < image_width; x++)
         {
             color = image.get_pixel(x, y);
+
+            if(gamma_correction)
+            {
+                color.to_linear(image.get_gamma());
+            }
+            
             threshold_value = ordered.threshold_matrix[y % threshold_matrix_height][x % threshold_matrix_width];
             // normalize the threshold value by subtracting half the color channel range (normalized values should range from -127 to 128)
             threshold_value_scaled = threshold_value - color_channel_max_half;

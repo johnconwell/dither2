@@ -94,7 +94,7 @@ public:
 
     ErrorDiffusion() = delete;
 
-    ErrorDiffusion::ErrorDiffusion(std::string name)
+    ErrorDiffusion(std::string name)
     {
         if(!COORDINATES.contains(name))
         {

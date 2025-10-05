@@ -48,7 +48,7 @@ bool CLI::parse(int argc, const char* argv[])
         if(result.count("help"))
         {
             std::cout << options.help() << std::endl;
-            exit(0);
+            std::exit(EXIT_SUCCESS);
         }
 
         if(result.count("input"))
@@ -95,6 +95,7 @@ bool CLI::parse(int argc, const char* argv[])
             if(num_args != 2)
             {
                 std::cerr << "Error: Incorrect number of arguments for --reduce flag. Expected 2, received " << num_args << "." << std::endl;
+                std::cerr << result["reduce"].as<std::vector<std::string>>()[0] << " " << result["reduce"].as<std::vector<std::string>>()[1] << std::endl;
                 return false;
             }
 

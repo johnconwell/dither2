@@ -16,9 +16,37 @@ int main(int argc, const char* argv[])
         return EXIT_FAILURE;
     }
 
-    Image image;
-    image.load(cli.file_path_input.c_str());
-    image.save(cli.file_path_output.c_str());
+    // std::cout << cli.to_string() << std::endl;
+
+    Dither dither = Dither();
+    dither.load(cli.file_path_input.c_str());
+
+    if(cli.grayscale)
+    {
+        dither.grayscale(cli.grayscale_weights);
+    }
+
+    if(cli.convolve)
+    {
+        dither.convolve(cli.convolve_kernel);
+    }
+
+    if(cli.reduce)
+    {
+        dither.reduce(cli.mapping_method, cli.palette, cli.gamma_correction);
+    }
+
+    if(cli.error_diffusion)
+    {
+        dither.error_diffusion(cli.error_diffusion_algorithm, cli.mapping_method, cli.palette, cli.gamma_correction);
+    }
+
+    if(cli.ordered)
+    {
+        dither.ordered(cli.ordered_threshold_matrix, cli.mapping_method, cli.palette, cli.gamma_correction);
+    }
+
+    dither.save(cli.file_path_output.c_str());
 
     return EXIT_SUCCESS;
 }

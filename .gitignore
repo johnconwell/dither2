@@ -1,5 +1,4 @@
 .vscode/
-input/
-output/
+*.png
 *.exe
 *.o

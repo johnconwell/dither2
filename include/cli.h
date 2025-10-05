@@ -2,6 +2,7 @@
 #define __CLI_H
 
 #include "cxxopts.hpp"
+#include <cstdlib> // std::exit
 #include <iostream> // std::cerr, std::endl
 #include <string> // std::string
 
