@@ -29,8 +29,9 @@ public:
     Palette(std::string name);
 
     void sort();
-    Color nearest(Color color, std::string mapping_method);
+    Color nearest(Color input, std::string mapping_method, std::vector<Color> input_range, std::vector<Color> output_range, std::vector<double> slope);
     Color pitch_vector();
+    std::vector<Color> get_color_range();
 
     std::string to_string();
 

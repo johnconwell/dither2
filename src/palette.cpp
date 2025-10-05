@@ -61,7 +61,7 @@ void Palette::sort()
     return;
 }
 
-Color Palette::nearest(Color color, std::string mapping_method)
+Color Palette::nearest(Color input, std::string mapping_method, std::vector<Color> input_range, std::vector<Color> output_range, std::vector<double> slope)
 {
     int index_nearest = -1;
     int distance_squared_nearest = INT_MAX;
@@ -71,7 +71,8 @@ Color Palette::nearest(Color color, std::string mapping_method)
     {
         for(std::size_t index_palette = 0; index_palette < colors_size; index_palette++)
         {
-            int distance_squared = color.distance_euclidean_squared(colors[index_palette]);
+            const int distance_squared = input.distance_euclidean_squared(colors[index_palette]);
+            
             if(distance_squared < distance_squared_nearest)
             {
                 distance_squared_nearest = distance_squared;
@@ -83,7 +84,27 @@ Color Palette::nearest(Color color, std::string mapping_method)
     {
         for(std::size_t index_palette = 0; index_palette < colors_size; index_palette++)
         {
-            int distance_squared = color.distance_manhattan(colors[index_palette]);
+            const int distance_squared = input.distance_manhattan(colors[index_palette]);
+
+            if(distance_squared < distance_squared_nearest)
+            {
+                distance_squared_nearest = distance_squared;
+                index_nearest = index_palette;
+            }
+        }
+    }
+    else if(mapping_method == "UNIFORM_HISTOGRAM")
+    {
+        const std::size_t INDEX_COLOR_MIN = 0;
+        const int color_mapped_r = output_range[INDEX_COLOR_MIN].r + (slope[Color::INDEX_R] * (input.r - input_range[INDEX_COLOR_MIN].r));
+        const int color_mapped_g = output_range[INDEX_COLOR_MIN].g + (slope[Color::INDEX_R] * (input.g - input_range[INDEX_COLOR_MIN].g));
+        const int color_mapped_b = output_range[INDEX_COLOR_MIN].b + (slope[Color::INDEX_R] * (input.b - input_range[INDEX_COLOR_MIN].b));
+        Color color_mapped = Color(color_mapped_r, color_mapped_g, color_mapped_b, Color::CHANNEL_MAX);
+
+        for(std::size_t index_palette = 0; index_palette < colors_size; index_palette++)
+        {
+            const int distance_squared = color_mapped.distance_euclidean_squared(colors[index_palette]);
+
             if(distance_squared < distance_squared_nearest)
             {
                 distance_squared_nearest = distance_squared;
@@ -117,6 +138,51 @@ Color Palette::pitch_vector()
     distance_vector.b /= static_cast<double>(colors_size - 1);
 
     return distance_vector;
+}
+
+std::vector<Color> Palette::get_color_range()
+{
+    std::vector<Color> color_range = {
+        Color(Color::CHANNEL_MAX, Color::CHANNEL_MAX, Color::CHANNEL_MAX, Color::CHANNEL_MAX),
+        Color(0, 0, 0, Color::CHANNEL_MAX)
+    };
+    const std::size_t palette_size = colors.size();
+    const std::size_t INDEX_COLOR_MIN = 0;
+    const std::size_t INDEX_COLOR_MAX = 1;
+
+    for(std::size_t index_palette = 0; index_palette < palette_size; index_palette++)
+    {
+        const Color color = colors[index_palette];
+
+        if(color.r < color_range[INDEX_COLOR_MIN].r)
+        {
+            color_range[INDEX_COLOR_MIN].r = color.r;
+        }
+        else if(color.r > color_range[INDEX_COLOR_MAX].r)
+        {
+            color_range[INDEX_COLOR_MAX].r = color.r;
+        }
+
+        if(color.g < color_range[INDEX_COLOR_MIN].g)
+        {
+            color_range[INDEX_COLOR_MIN].g = color.g;
+        }
+        else if(color.g > color_range[INDEX_COLOR_MAX].g)
+        {
+            color_range[INDEX_COLOR_MAX].g = color.g;
+        }
+
+        if(color.b < color_range[INDEX_COLOR_MIN].b)
+        {
+            color_range[INDEX_COLOR_MIN].b = color.b;
+        }
+        else if(color.b > color_range[INDEX_COLOR_MAX].b)
+        {
+            color_range[INDEX_COLOR_MAX].b = color.b;
+        }
+    }
+
+    return color_range;
 }
 
 std::string Palette::to_string()

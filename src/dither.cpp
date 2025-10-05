@@ -130,6 +130,28 @@ void Dither::reduce(std::string name_mapping_method, std::string name_palette, b
     Palette palette = Palette(name_palette);
     const std::size_t image_height = image.get_height();
     const std::size_t image_width = image.get_width();
+    const std::size_t INDEX_COLOR_MIN = 0;
+    const std::size_t INDEX_COLOR_MAX = 1;
+    std::vector<Color> color_range_image;
+    std::vector<Color> color_range_palette;
+    std::vector<double> slope;
+
+    if(name_mapping_method == "UNIFORM_HISTOGRAM")
+    {
+        color_range_image = image.get_color_range();
+        color_range_palette = palette.get_color_range();
+        slope = {
+            static_cast<double>(color_range_palette[INDEX_COLOR_MAX].r - color_range_palette[INDEX_COLOR_MIN].r) / static_cast<double>(color_range_image[INDEX_COLOR_MAX].r - color_range_image[INDEX_COLOR_MIN].r),
+            static_cast<double>(color_range_palette[INDEX_COLOR_MAX].g - color_range_palette[INDEX_COLOR_MIN].g) / static_cast<double>(color_range_image[INDEX_COLOR_MAX].g - color_range_image[INDEX_COLOR_MIN].g),
+            static_cast<double>(color_range_palette[INDEX_COLOR_MAX].b - color_range_palette[INDEX_COLOR_MIN].b) / static_cast<double>(color_range_image[INDEX_COLOR_MAX].b - color_range_image[INDEX_COLOR_MIN].b),
+        };
+
+        std::cout << "image min: " << color_range_image[INDEX_COLOR_MIN].r << " " << color_range_image[INDEX_COLOR_MIN].g << " " << color_range_image[INDEX_COLOR_MIN].b << std::endl;
+        std::cout << "image max: " << color_range_image[INDEX_COLOR_MAX].r << " " << color_range_image[INDEX_COLOR_MAX].g << " " << color_range_image[INDEX_COLOR_MAX].b << std::endl;
+        std::cout << "palette min: " << color_range_palette[INDEX_COLOR_MIN].r << " " << color_range_palette[INDEX_COLOR_MIN].g << " " << color_range_palette[INDEX_COLOR_MIN].b << std::endl;
+        std::cout << "palette max: " << color_range_palette[INDEX_COLOR_MAX].r << " " << color_range_palette[INDEX_COLOR_MAX].g << " " << color_range_palette[INDEX_COLOR_MAX].b << std::endl;
+        std::cout << "slope: " << slope[0] << " " << slope[1] << " " << slope[2] << std::endl;
+    }
 
     for(std::size_t y = 0; y < image_height; y++)
     {
@@ -138,14 +160,7 @@ void Dither::reduce(std::string name_mapping_method, std::string name_palette, b
             Color color = image.get_pixel(x, y);
             Color palette_nearest;
 
-            if(name_mapping_method == "UNIFORM_HISTOGRAM")
-            {
-                // TODO
-            }
-            else
-            {
-                palette_nearest = palette.nearest(color, name_mapping_method);
-            }
+            palette_nearest = palette.nearest(color, name_mapping_method, color_range_image, color_range_palette, slope);
 
             image.set_pixel(palette_nearest, x, y);
         }
@@ -161,6 +176,28 @@ void Dither::error_diffusion(std::string name_algorithm, std::string name_mappin
     const std::size_t image_height = image.get_height();
     const std::size_t image_width = image.get_width();
     std::vector<std::vector<std::vector<int>>> error_matrix(image_height, std::vector<std::vector<int>>(image_width, std::vector<int>(Color::NUM_BYTES - 1, 0)));
+    const std::size_t INDEX_COLOR_MIN = 0;
+    const std::size_t INDEX_COLOR_MAX = 1;
+    std::vector<Color> color_range_image;
+    std::vector<Color> color_range_palette;
+    std::vector<double> slope;
+
+    if(name_mapping_method == "UNIFORM_HISTOGRAM")
+    {
+        color_range_image = image.get_color_range();
+        color_range_palette = palette.get_color_range();
+        slope = {
+            static_cast<double>(color_range_palette[INDEX_COLOR_MAX].r - color_range_palette[INDEX_COLOR_MIN].r) / static_cast<double>(color_range_image[INDEX_COLOR_MAX].r - color_range_image[INDEX_COLOR_MIN].r),
+            static_cast<double>(color_range_palette[INDEX_COLOR_MAX].g - color_range_palette[INDEX_COLOR_MIN].g) / static_cast<double>(color_range_image[INDEX_COLOR_MAX].g - color_range_image[INDEX_COLOR_MIN].g),
+            static_cast<double>(color_range_palette[INDEX_COLOR_MAX].b - color_range_palette[INDEX_COLOR_MIN].b) / static_cast<double>(color_range_image[INDEX_COLOR_MAX].b - color_range_image[INDEX_COLOR_MIN].b),
+        };
+
+        std::cout << "image min: " << color_range_image[INDEX_COLOR_MIN].r << " " << color_range_image[INDEX_COLOR_MIN].g << " " << color_range_image[INDEX_COLOR_MIN].b << std::endl;
+        std::cout << "image max: " << color_range_image[INDEX_COLOR_MAX].r << " " << color_range_image[INDEX_COLOR_MAX].g << " " << color_range_image[INDEX_COLOR_MAX].b << std::endl;
+        std::cout << "palette min: " << color_range_palette[INDEX_COLOR_MIN].r << " " << color_range_palette[INDEX_COLOR_MIN].g << " " << color_range_palette[INDEX_COLOR_MIN].b << std::endl;
+        std::cout << "palette max: " << color_range_palette[INDEX_COLOR_MAX].r << " " << color_range_palette[INDEX_COLOR_MAX].g << " " << color_range_palette[INDEX_COLOR_MAX].b << std::endl;
+        std::cout << "slope: " << slope[0] << " " << slope[1] << " " << slope[2] << std::endl;
+    }
 
     for(std::size_t y = 0; y < image_height; y++)
     {
@@ -180,14 +217,7 @@ void Dither::error_diffusion(std::string name_algorithm, std::string name_mappin
 
             Color palette_nearest;
 
-            if(name_mapping_method == "UNIFORM_HISTOGRAM")
-            {
-                // TODO
-            }
-            else
-            {
-                palette_nearest = palette.nearest(color, name_mapping_method);
-            }
+            palette_nearest = palette.nearest(color, name_mapping_method, color_range_image, color_range_palette, slope);
 
             std::vector<int> current_pixel_error = {color.r - palette_nearest.r, color.g - palette_nearest.g, color.b - palette_nearest.b};
 
@@ -231,6 +261,28 @@ void Dither::ordered(std::string name_threshold_matrix, std::string name_mapping
     int threshold_value_scaled;
     Color threshold_color_offset;
     Color palette_nearest;
+    const std::size_t INDEX_COLOR_MIN = 0;
+    const std::size_t INDEX_COLOR_MAX = 1;
+    std::vector<Color> color_range_image;
+    std::vector<Color> color_range_palette;
+    std::vector<double> slope;
+
+    if(name_mapping_method == "UNIFORM_HISTOGRAM")
+    {
+        color_range_image = image.get_color_range();
+        color_range_palette = palette.get_color_range();
+        slope = {
+            static_cast<double>(color_range_palette[INDEX_COLOR_MAX].r - color_range_palette[INDEX_COLOR_MIN].r) / static_cast<double>(color_range_image[INDEX_COLOR_MAX].r - color_range_image[INDEX_COLOR_MIN].r),
+            static_cast<double>(color_range_palette[INDEX_COLOR_MAX].g - color_range_palette[INDEX_COLOR_MIN].g) / static_cast<double>(color_range_image[INDEX_COLOR_MAX].g - color_range_image[INDEX_COLOR_MIN].g),
+            static_cast<double>(color_range_palette[INDEX_COLOR_MAX].b - color_range_palette[INDEX_COLOR_MIN].b) / static_cast<double>(color_range_image[INDEX_COLOR_MAX].b - color_range_image[INDEX_COLOR_MIN].b),
+        };
+
+        std::cout << "image min: " << color_range_image[INDEX_COLOR_MIN].r << " " << color_range_image[INDEX_COLOR_MIN].g << " " << color_range_image[INDEX_COLOR_MIN].b << std::endl;
+        std::cout << "image max: " << color_range_image[INDEX_COLOR_MAX].r << " " << color_range_image[INDEX_COLOR_MAX].g << " " << color_range_image[INDEX_COLOR_MAX].b << std::endl;
+        std::cout << "palette min: " << color_range_palette[INDEX_COLOR_MIN].r << " " << color_range_palette[INDEX_COLOR_MIN].g << " " << color_range_palette[INDEX_COLOR_MIN].b << std::endl;
+        std::cout << "palette max: " << color_range_palette[INDEX_COLOR_MAX].r << " " << color_range_palette[INDEX_COLOR_MAX].g << " " << color_range_palette[INDEX_COLOR_MAX].b << std::endl;
+        std::cout << "slope: " << slope[0] << " " << slope[1] << " " << slope[2] << std::endl;
+    }
 
     for(std::size_t y = 0; y < image_height; y++)
     {
@@ -252,15 +304,8 @@ void Dither::ordered(std::string name_threshold_matrix, std::string name_mapping
                 threshold_value_scaled * palette_pitch_vector.g / Color::CHANNEL_MAX,
                 threshold_value_scaled * palette_pitch_vector.b / Color::CHANNEL_MAX,
                 Color::CHANNEL_MAX);
-            
-            if(name_mapping_method == "UNIFORM_HISTOGRAM")
-            {
-                // TODO
-            }
-            else
-            {
-                palette_nearest = palette.nearest(color.add(threshold_color_offset), name_mapping_method);
-            }
+
+            palette_nearest = palette.nearest(color.add(threshold_color_offset), name_mapping_method, color_range_image, color_range_palette, slope);
             
             image.set_pixel(palette_nearest, x, y);
         }

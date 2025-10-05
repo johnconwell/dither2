@@ -3,7 +3,7 @@ IDIR = ./include
 LDIR = ./lib
 ODIR = ./obj
 SDIR = ./src
-# OUTDIR = ./output
+OUTDIR = ./output
 # CTNDIR = $(OUTDIR)/convolution
 # CVDDIR = $(OUTDIR)/convolve_dither
 # EDDIR = $(OUTDIR)/error_diffusion
@@ -34,4 +34,4 @@ dither : $(OBJ)
 .PHONY : clean
 
 clean:
-	rm -f $(BDIR)/*.exe $(ODIR)/*.o
+	rm -f $(BDIR)/*.exe $(ODIR)/*.o $(OUTDIR)/*.png

@@ -19,6 +19,7 @@ public:
     std::size_t get_width();
     std::size_t get_height();
     double get_gamma();
+    std::vector<Color> get_color_range();
 
     std::size_t load(const char* file_name);
     std::size_t save(const char* file_name);

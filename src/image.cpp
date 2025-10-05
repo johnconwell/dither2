@@ -54,6 +54,53 @@ double Image::get_gamma()
     return gamma;
 }
 
+std::vector<Color> Image::get_color_range()
+{
+    std::vector<Color> color_range = {
+        Color(Color::CHANNEL_MAX, Color::CHANNEL_MAX, Color::CHANNEL_MAX, Color::CHANNEL_MAX),
+        Color(0, 0, 0, Color::CHANNEL_MAX)
+    };
+    const std::size_t INDEX_COLOR_MIN = 0;
+    const std::size_t INDEX_COLOR_MAX = 1;
+
+    for(std::size_t y = 0; y < height; y++)
+    {
+        for(std::size_t x = 0; x < width; x++)
+        {
+            const Color color = get_pixel(x, y);
+
+            if(color.r < color_range[INDEX_COLOR_MIN].r)
+            {
+                color_range[INDEX_COLOR_MIN].r = color.r;
+            }
+            else if(color.r > color_range[INDEX_COLOR_MAX].r)
+            {
+                color_range[INDEX_COLOR_MAX].r = color.r;
+            }
+
+            if(color.g < color_range[INDEX_COLOR_MIN].g)
+            {
+                color_range[INDEX_COLOR_MIN].g = color.g;
+            }
+            else if(color.g > color_range[INDEX_COLOR_MAX].g)
+            {
+                color_range[INDEX_COLOR_MAX].g = color.g;
+            }
+
+            if(color.b < color_range[INDEX_COLOR_MIN].b)
+            {
+                color_range[INDEX_COLOR_MIN].b = color.b;
+            }
+            else if(color.b > color_range[INDEX_COLOR_MAX].b)
+            {
+                color_range[INDEX_COLOR_MAX].b = color.b;
+            }
+        }
+    }
+
+    return color_range;
+}
+
 std::size_t Image::load(const char* file_name)
 {
     reset();
