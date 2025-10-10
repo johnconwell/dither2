@@ -14,6 +14,9 @@ CLI::CLI()
     error_diffusion_algorithm = "";
     ordered = false;
     ordered_threshold_matrix = "";
+    temporal = false;
+    temporal_method = "";
+    temporal_frames = "";
     mapping_method = "";
     palette = "";
     benchmark = false;
@@ -40,6 +43,7 @@ bool CLI::parse(int argc, const char* argv[])
             ("r,reduce", "Reduces the image to the specified palette without applying dithering", cxxopts::value<std::vector<std::string>>(), "<MAPPING_METHOD>,<PALETTE>")
             ("e,error_diffusion", "Dithers the image using the specified error diffusion algorithm and color mapping method", cxxopts::value<std::vector<std::string>>(), "<ERROR_DIFFUSION_ALGORITHM>,<MAPPING_METHOD>,<PALETTE>")
             ("d,ordered", "Dithers the image using the specified threshold matrix and color mapping method", cxxopts::value<std::vector<std::string>>(), "<ORDERED_THRESHOLD_MATRIX>,<MAPPING_METHOD>,<PALETTE>")
+            ("t,temporal", "Dithers the image over time using the specified temporal dithering method and color mapping method", cxxopts::value<std::vector<std::string>>(), "<TEMPORAL_METHOD>,<TEMPORAL_FRAMES>,<MAPPING_METHOD>,<PALETTE>")
             ("b,benchmark", "Displays benchmark information to stdout")
         ;
 
@@ -136,6 +140,23 @@ bool CLI::parse(int argc, const char* argv[])
             palette = result["ordered"].as<std::vector<std::string>>()[2];
         }
 
+        if(result.count("temporal"))
+        {
+            std::size_t num_args = result["temporal"].as<std::vector<std::string>>().size();
+
+            if(num_args != 4)
+            {
+                std::cerr << "Error: Incorrect number of arguments for --temporal flag. Expected 4, received " << num_args << "." << std::endl;
+                return false;
+            }
+
+            temporal = true;
+            temporal_method = result["temporal"].as<std::vector<std::string>>()[0];
+            temporal_frames = result["temporal"].as<std::vector<std::string>>()[1];
+            mapping_method = result["temporal"].as<std::vector<std::string>>()[2];
+            palette = result["temporal"].as<std::vector<std::string>>()[3];
+        }
+
         if(result.count("benchmark"))
         {
             benchmark = true;
@@ -173,6 +194,9 @@ std::string CLI::to_string()
     output += "ordered: ";
     output += ordered ? "true\n" : "false\n";
     output += "ordered_threshold_matrix: " + ordered_threshold_matrix + "\n";
+    output += temporal ? "true\n" : "false\n";
+    output += "temporal_method: " + temporal_method + "\n";
+    output += "temporal_frames: " + temporal_frames + "\n";
     output += "mapping_method: " + mapping_method + "\n";
     output += "palette: " + palette + "\n";
     output += "benchmark: ";

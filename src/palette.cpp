@@ -14,7 +14,7 @@ Palette::Palette(std::string name)
         
         if(!file.is_open())
         {
-            std::cerr << "Error: innvalid palette argument - " << name << std::endl;
+            std::cerr << "Error: Invalid palette argument - " << name << std::endl;
             std::exit(EXIT_FAILURE);
         }
 
@@ -39,6 +39,16 @@ Palette::Palette(std::string name)
     }
 
     return;
+}
+
+std::size_t Palette::size()
+{
+    return colors.size();
+}
+
+Color Palette::get_color_at(std::size_t index)
+{
+    return colors[index];
 }
 
 void Palette::sort()
@@ -114,11 +124,59 @@ Color Palette::nearest(Color input, std::string mapping_method, std::vector<Colo
     }
     else
     {
-        std::cerr << "Error: invalide palette mapping method - " << mapping_method << std::endl;
+        std::cerr << "Error: Invalid palette mapping method - " << mapping_method << std::endl;
         std::exit(EXIT_FAILURE);
     }
 
     return colors[index_nearest];
+}
+
+int Palette::nearest_index_lighter(Color input)
+{
+    double input_lightness = input.get_lightness();
+    std::size_t palette_size = colors.size();
+
+    // none of the colors in the palette are lighter, so return error value
+    if(colors[palette_size - 1].get_lightness() <= input_lightness)
+    {
+        return -1;
+    }
+
+    for(int index_palette = palette_size - 2; index_palette >= 0; index_palette--)
+    {
+        // found the first darker color, so the next lighter color on the palette must be the nearest lighter palette color
+        if(colors[index_palette].get_lightness() < input_lightness)
+        {
+            return index_palette + 1;
+        }
+    }
+
+    // no lighter colors found, so the nearest lighter color must be the last palette color
+    return palette_size - 1;
+}
+
+int Palette::nearest_index_darker(Color input)
+{
+    double input_lightness = input.get_lightness();
+    std::size_t palette_size = colors.size();
+
+    // none of the colors in the palette are darker, so return error value
+    if(colors[0].get_lightness() >= input_lightness)
+    {
+        return -1;
+    }
+
+    for(int index_palette = 1; index_palette < static_cast<int>(palette_size); index_palette++)
+    {
+        // found the first lighter color, so the next darker color on the palette must be the nearest darker palette color
+        if(colors[index_palette].get_lightness() > input_lightness)
+        {
+            return index_palette - 1;
+        }
+    }
+
+    // no darker colors found, so the nearest darker color must be the first palette color
+    return 0;
 }
 
 Color Palette::pitch_vector()

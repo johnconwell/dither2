@@ -25,6 +25,9 @@ public:
     std::string error_diffusion_algorithm;
     bool ordered;
     std::string ordered_threshold_matrix;
+    bool temporal;
+    std::string temporal_method;
+    std::string temporal_frames;
     std::string mapping_method;
     std::string palette;
     bool benchmark;

@@ -8,13 +8,14 @@
 #include "ordered.h"
 #include "palette.h"
 #include <algorithm> // std::clamp
+#include <random> // std::random_device, std::mt19337, std::uniform_reaL_distribution
 #include <unordered_map> // std::unordered_map
 #include <vector> // std::vector
 
 class Dither
 {
 public:
-    Dither();
+    Dither(std::size_t frames = 1);
 
     std::size_t load(const char* file_name);
     std::size_t save(const char* file_name);
@@ -24,6 +25,7 @@ public:
     void reduce(std::string name_mapping_method, std::string name_palette, bool gamma_correction);
     void error_diffusion(std::string name_algorithm, std::string name_mapping_method, std::string name_palette, bool gamma_correction);
     void ordered(std::string name_threshold_matrix, std::string name_mapping_method, std::string name_palette, bool gamma_correction);
+    void temporal(std::string name_temporal_method, std::size_t frames, std::string name_mapping_method, std::string name_palette, bool gamma_correction);
 
     Image image;
 };

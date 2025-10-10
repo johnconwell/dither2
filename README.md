@@ -18,6 +18,7 @@ Use the `dither` command followed by the input and output flags and any number o
 | `-r, --reduce <MAPPING_METHOD>,<PALETTE>` | Reduces the image to the specified palette without applying dithering | Optional |
 | `-e, --error_diffusion <ALGORITHM>,<MAPPING_METHOD>,<PALETTE>` | Dithers the image using the specified error diffusion algorithm and color mapping method | Optional |
 | `-d, --ordered <THRESHOLD_MATRIX>,<MAPPING_METHOD>,<PALETTE>` | Dithers the image using the specified threshold matrix and color mapping method | Optional |
+| `t, --temporal <TEMPORAL_METHOD>,<TEMPORAL_FRAMES>,<MAPPING_METHOD>,<PALETTE>` | Dithers the image temporally using the specified temporal dithering method, color mapping method, and number of frames. Output can be saved to .gif or .png | Optional |
 | `-b, --benchmark` | Displays benchmark information to stdout | Optional |
 
 ### Grayscale Channel Weights
@@ -87,13 +88,20 @@ Threshold matrix (or "map") options when using the `--d, --ordered` flag. The in
 | `WHITE_NOISE_128X128` | 128x128 white noise threshold matrix |
 | `WHITE_NOISE_256X256` | 256x256 white noise threshold matrix |
 
+### Temporal Dithering Methods
+
+| TEMPORAL_METHOD | Description |
+| :-- | :-- |
+| `RANDOM` | Randomly assigns each pixel of each frame to any palette color, weighted based on color distance |
+| `PWM` | Modulates each pixel between the nearest lighter and darker palette colors |
+
 ### Palette Mapping Methods
-Mapping method options when using the `-r, --reduce`, `--e, --error_diffusion`, or `--d, --ordered` flags. Each pixel in the output image will be mapped to a color in the palette according to the specified option. Pixels are mapped after accumulated error is applied in error diffusion algorithms and after the threshold matrix is applied in ordered algorithms.
+Mapping method options when using the `-r, --reduce`, `-e, --error_diffusion`, `-d, --ordered`, or `-t, --temporal` flags. Each pixel in the output image will be mapped to a color in the palette according to the specified option. Pixels are mapped after accumulated error is applied in error diffusion algorithms and after the threshold matrix is applied in ordered algorithms.
 | MAPPING_METHOD | Description |
 | :-- | :-- |
 | `EUCLIDEAN_DISTANCE` | Maps each pixel to the nearest palette color in Euclidean space |
 | `MANHATTAN_DISTANCE` | Maps each pixel to the nearest palette color in Cartesian space |
-| `UNIFORM_HISTOGRAM` | Maps each pixel such that the output image contains approximately equal amount of each color in the specified palette. Note that the resulting image may not have a uniform distribution of palette colors, but will likely have a more uniform distribution than if choosing a distance-based method. |
+| `UNIFORM_HISTOGRAM` | Maps each pixel such that the output image contains approximately equal amount of each color in the specified palette. Note that the resulting image may not have a uniform distribution of palette colors, but will likely have a more uniform distribution than if choosing a distance-based method. Not valid when using `-t` flag. |
 
 ### Palettes
 Palette options when using the `-r, --reduce`, `--e, --error_diffusion`, or `--d, --ordered` flags. 

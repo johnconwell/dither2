@@ -28,8 +28,12 @@ public:
     Palette() = delete;
     Palette(std::string name);
 
+    std::size_t size();
+    Color get_color_at(std::size_t index);
     void sort();
     Color nearest(Color input, std::string mapping_method, std::vector<Color> input_range, std::vector<Color> output_range, std::vector<double> slope);
+    int nearest_index_lighter(Color input);
+    int nearest_index_darker(Color input);
     Color pitch_vector();
     std::vector<Color> get_color_range();
 

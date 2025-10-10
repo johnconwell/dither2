@@ -5,8 +5,6 @@
 #include <cstdlib> // std::exit
 #include <iostream>
 
-
-
 int main(int argc, const char* argv[])
 {
     CLI cli = CLI();
@@ -16,10 +14,15 @@ int main(int argc, const char* argv[])
         return EXIT_FAILURE;
     }
 
-    // std::cout << cli.to_string() << std::endl;
+    std::cout << cli.to_string() << std::endl;
 
     Dither dither = Dither();
-    dither.load(cli.file_path_input.c_str());
+    std::size_t error = dither.load(cli.file_path_input.c_str());
+
+    if(error)
+    {
+        return EXIT_FAILURE;
+    }
 
     if(cli.grayscale)
     {
@@ -46,7 +49,17 @@ int main(int argc, const char* argv[])
         dither.ordered(cli.ordered_threshold_matrix, cli.mapping_method, cli.palette, cli.gamma_correction);
     }
 
-    dither.save(cli.file_path_output.c_str());
+    if(cli.temporal)
+    {
+        dither.temporal(cli.temporal_method, std::stoi(cli.temporal_frames), cli.mapping_method, cli.palette, cli.gamma_correction);
+    }
+
+    error = dither.save(cli.file_path_output.c_str());
+
+    if(error)
+    {
+        return EXIT_FAILURE;
+    }
 
     return EXIT_SUCCESS;
 }
