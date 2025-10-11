@@ -3,7 +3,7 @@
 A command line interface application that provides several image processing functions that can be applied to PNG images.
 
 ## Usage
-Use the `dither` command followed by the input and output flags and any number of optional flags. Specifying multiple optional flags will apply them to the input image in the order they are listed. See the example section for a detailed look at use cases.
+Use the `dither` command followed by the input and output flags and any number of optional flags. See the example section for a detailed look at use cases.
 
 ## CLI
 `dither [options]`
@@ -47,7 +47,7 @@ Options when using the `-c, --convolve` flag. The input image will be convolved 
 | `UNSHARP_MASK` | { 0, 0, 0, 0, 0}<br/>{ 0, 0, 0, 0, 0}<br/>{ 0, 0, 2, 0, 0} - GAUSSIAN_BLUR <br/>{ 0, 0, 0, 0, 0}<br/>{ 0, 0, 0, 0, 0}<br/>
 
 ### Error Diffusion Algorithms
-Algorithm options when using the `--e, --error_diffusion` flag. The input image will be quantized using the algorithm specified by the option. The 'X' in each kernel represents the pixel being quantized, and the rest of the kernel represents the fraction of error that will be diffused to the surrounding pixels. The bottom fraction in parentheses is a multiplier applied to each non-'X' member of the kernel.
+Algorithm options when using the `-e, --error_diffusion` flag. The input image will be quantized using the algorithm specified by the option. The 'X' in each kernel represents the pixel being quantized, and the rest of the kernel represents the fraction of error that will be diffused to the surrounding pixels. The bottom fraction in parentheses is a multiplier applied to each non-'X' member of the kernel.
 | ALGORITHM | Description |
 | :-- | :-- |
 | `LINEAR` | {X, 1} |
@@ -61,7 +61,7 @@ Algorithm options when using the `--e, --error_diffusion` flag. The input image 
 | `SIERRA_LITE` | {0, X, 2}<br/>{1, 1, 0}<br/>(1 / 4) |
 
 ### Ordered Threshold Matrixes
-Threshold matrix (or "map") options when using the `--d, --ordered` flag. The input image will be quantized against the threshold map specified by the option.<br/>
+Threshold matrix (or "map") options when using the `-d, --ordered` flag. The input image will be quantized against the threshold map specified by the option.<br/>
 [Bayer](https://en.wikipedia.org/wiki/Ordered_dithering#Threshold_map) pattern threshold matrixes produce even results but leave noticable patterns in the output image. Bayer matrixes larger than 8x8 are unlikely to produce better results, since an 8x8 bayer matrix contains every possible value (0-255) of an sRGB encoded image.<br/>
 [Blue Noise](https://github.com/johnconwell/noise2d) threshold matrixes contain only high-frequency noise, producing even results with few noticalbe patterns, especially when using larger threshold matrixes.<br/>
 [White Noise](https://en.wikipedia.org/wiki/White_noise) threshold matrixes produce uneven results and leave noticable patterns in the output image. They are included for comparison.
@@ -104,7 +104,7 @@ Mapping method options when using the `-r, --reduce`, `-e, --error_diffusion`, `
 | `UNIFORM_HISTOGRAM` | Maps each pixel such that the output image contains approximately equal amount of each color in the specified palette. Note that the resulting image may not have a uniform distribution of palette colors, but will likely have a more uniform distribution than if choosing a distance-based method. Not valid when using `-t` flag. |
 
 ### Palettes
-Palette options when using the `-r, --reduce`, `--e, --error_diffusion`, or `--d, --ordered` flags. 
+Palette options when using the `-r, --reduce`, `-e, --error_diffusion`, `-d, --ordered`, or `-t, --temporal` flags. 
 | PALETTE | Description |
 | :-- | :-- |
 | 1BIT_MONITOR_GLOW | [lospec](https://lospec.com/palette-list/1bit-monitor-glow) |
@@ -115,6 +115,9 @@ Palette options when using the `-r, --reduce`, `--e, --error_diffusion`, or `--d
 | MIDNIGHT_ABLAZE | [lospec](https://lospec.com/palette-list/midnight-ablaze) |
 | SLSO8 | [lospec](https://lospec.com/palette-list/slso8) |
 
+## Examples
+
+
 ## To Compile
 Requirements: GNU C++ compiler, make<br/>
 Open a terminal in the root directory and enter the command
@@ -122,10 +125,6 @@ Open a terminal in the root directory and enter the command
 > make
 ```
 
-## Algorithms
-Blue Noise - [Void and Cluster](docs/1993-void-cluster.pdf)
-
 ## Libraries
-[Noise2D](https://github.com/johnconwell/noise2d) - provides noise generation functions<br/>
-[FFTW](https://www.fftw.org/) - provides Fourier transform functions<br/>
 [LodePNG](https://lodev.org/lodepng/) - provides png encoding/decoding functions
+[gif-h](https://github.com/charlietangora/gif-h) - provides gif writing functions

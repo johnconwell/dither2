@@ -14,8 +14,6 @@ int main(int argc, const char* argv[])
         return EXIT_FAILURE;
     }
 
-    std::cout << cli.to_string() << std::endl;
-
     Dither dither = Dither();
     std::size_t error = dither.load(cli.file_path_input.c_str());
 

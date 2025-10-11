@@ -173,13 +173,17 @@ std::size_t Image::load(const char* file_name)
 
     if(error)
     {
-        std::cerr << "error: load" << file_name << " - " << error << ": " << lodepng_error_text(error) << std::endl;
+        std::cerr << "error: load " << file_name << " - " << error << ": " << lodepng_error_text(error) << std::endl;
         return error;
     }
 
     if(state.info_png.gama_defined)
     {
         gamma = 100000.0 / static_cast<double>(state.info_png.gama_gamma);
+    }
+    else
+    {
+        gamma = 2.2;
     }
 
     return error;
@@ -232,6 +236,14 @@ std::size_t Image::save(const char* file_name)
         if(!gif_save_success)
         {
             std::cout << "error: gif save - " << file_name << std::endl;
+            error = 1;
+        }
+
+        gif_save_success = GifEnd(&writer);
+
+        if(!gif_save_success)
+        {
+            std::cout << "error: gif end - " << file_name << std::endl;
             error = 1;
         }
     }
